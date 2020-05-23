@@ -5,3 +5,7 @@
 teamcity
 downloads
 target
+.project
+*.prefs
+.classpath
+*/bin/*
