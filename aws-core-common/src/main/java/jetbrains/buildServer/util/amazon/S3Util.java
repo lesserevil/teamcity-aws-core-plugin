@@ -64,15 +64,34 @@ public final class S3Util {
   }
 
   @NotNull
-  public static <T extends Transfer> Collection<T> withTransferManager(@NotNull AmazonS3 s3Client, @NotNull final WithTransferManager<T> withTransferManager) throws Throwable {
+  public static <T extends Transfer> Collection<T>withTransferManager (@NotNull AmazonS3 s3Client, final TransferManagerConfiguration config, @NotNull final WithTransferManager<T> withTransferManager) throws Throwable {
+    return withTransferManager(s3Client, config, false, withTransferManager);
+  }
+
+  @NotNull
+  public static <T extends Transfer> Collection<T>withTransferManager (@NotNull AmazonS3 s3Client, @NotNull final WithTransferManager<T> withTransferManager) throws Throwable {
     return withTransferManager(s3Client, false, withTransferManager);
   }
 
   @NotNull
   public static <T extends Transfer> Collection<T> withTransferManager(@NotNull final AmazonS3 s3Client, final boolean shutdownClient,
+  @NotNull final WithTransferManager<T> withTransferManager) throws Throwable {
+    return withTransferManager(s3Client, null, shutdownClient, withTransferManager);
+  }
+
+  @NotNull
+  public static <T extends Transfer> Collection<T> withTransferManager(@NotNull final AmazonS3 s3Client, final TransferManagerConfiguration config, final boolean shutdownClient,
                                                                         @NotNull final WithTransferManager<T> withTransferManager) throws Throwable {
 
-    final TransferManager manager = TransferManagerBuilder.standard().withS3Client(s3Client).withExecutorFactory(createExecutorFactory(createDefaultExecutorService())).withShutDownThreadPools(true).build();
+    TransferManagerBuilder builder = TransferManagerBuilder.standard().withS3Client(s3Client).withExecutorFactory(createExecutorFactory(createDefaultExecutorService())).withShutDownThreadPools(true);
+    if (config != null) {
+      builder.withDisableParallelDownloads(config.isDisableParallelDownloads());
+      builder.withMinimumUploadPartSize(config.getMinimumUploadPartSize());
+      builder.withMultipartCopyPartSize(config.getMultipartCopyPartSize());
+      builder.withMultipartCopyThreshold(config.getMultipartCopyThreshold());
+      builder.withMultipartUploadThreshold(config.getMultipartUploadThreshold());
+    }
+    final TransferManager manager = builder.build();
 
     try {
       final ArrayList<T> transfers = new ArrayList<T>(withTransferManager.run(manager));
