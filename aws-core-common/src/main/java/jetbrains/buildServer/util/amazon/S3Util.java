@@ -87,8 +87,6 @@ public final class S3Util {
     if (config != null) {
       builder.withDisableParallelDownloads(config.isDisableParallelDownloads());
       builder.withMinimumUploadPartSize(config.getMinimumUploadPartSize());
-      builder.withMultipartCopyPartSize(config.getMultipartCopyPartSize());
-      builder.withMultipartCopyThreshold(config.getMultipartCopyThreshold());
       builder.withMultipartUploadThreshold(config.getMultipartUploadThreshold());
     }
     final TransferManager manager = builder.build();
