@@ -122,6 +122,17 @@ distZip {
     archiveName = "amazon-util.zip"
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'jetbrains.buildServer.util'
+            artifactId = 'amazon-util'
+            version = "${teamcityVersion}"
+
+            from components.java
+        }
+    }
+}
 
 task prepareUploadMavenArtifactsTask {
     dependsOn tasks.prepareArtifacts
