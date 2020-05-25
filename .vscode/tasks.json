@@ -4,9 +4,9 @@
 		{
 			"label": "build",
 			"type": "shell",
-			"command": "./gradlew clean build",
+			"command": "./gradlew clean build publishToMavenLocal",
 			"windows": {
-				"command": ".\\gradlew.bat clean build"
+				"command": ".\\gradlew.bat clean build publishToMavenLocal"
 			},
 			"problemMatcher": [
 				"$gradle"
